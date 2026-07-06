@@ -1,10 +1,7 @@
 package com.scaler.BMS_Eve.services;
 
 import com.scaler.BMS_Eve.models.*;
-import com.scaler.BMS_Eve.repositories.ShowRepository;
-import com.scaler.BMS_Eve.repositories.ShowSeatRepository;
-import com.scaler.BMS_Eve.repositories.ShowSeatTypeRepository;
-import com.scaler.BMS_Eve.repositories.UserRepository;
+import com.scaler.BMS_Eve.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -27,6 +24,8 @@ public class BookingService {
     ShowSeatRepository showSeatRepository;
     @Autowired
     ShowSeatTypeRepository showSeatTypeRepository;
+    @Autowired
+    BookingRepository bookingRepository;
 
 
     public Booking reserveBooking(Long userid, Long showId, List<Long> showSeatIds) throws IllegalAccessException {
@@ -62,7 +61,7 @@ public class BookingService {
         booking.setPrice(amount);
         booking.setShowSeats(validShowSeats);
         // Return the booking
-        return booking;
+        return bookingRepository.save(booking);
     }
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public List<ShowSeat> checkAvailabilityAndLock(Show show, List<Long> showSeatIds){
@@ -74,10 +73,11 @@ public class BookingService {
         // Option 2: Just proceed with the showSeats from the mentioned show
         List<ShowSeat> validShowSeats = new ArrayList<>();
         for(ShowSeat showSeat : showSeats){
-            if(showSeat.getShow().equals(show)){
+            if(showSeat.getShow().getId().equals(show.getId())){
                 validShowSeats.add(showSeat);
             }
         }
+        System.out.println("Valiud show seats :  " + validShowSeats);
         if(validShowSeats.isEmpty() || validShowSeats.size() > 10){
             throw new IllegalArgumentException("Invalid seat selection");
         }

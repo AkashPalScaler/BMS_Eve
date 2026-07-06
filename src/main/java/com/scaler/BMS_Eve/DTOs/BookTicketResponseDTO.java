@@ -11,4 +11,5 @@ public class BookTicketResponseDTO {
     String message;
     BookingStatus bookingStatus;
     Integer amount;
+    ResponseStatus responseStatus;
 }

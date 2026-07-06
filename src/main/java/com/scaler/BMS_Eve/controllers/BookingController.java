@@ -2,6 +2,7 @@ package com.scaler.BMS_Eve.controllers;
 
 import com.scaler.BMS_Eve.DTOs.BookTicketRequestDTO;
 import com.scaler.BMS_Eve.DTOs.BookTicketResponseDTO;
+import com.scaler.BMS_Eve.DTOs.ResponseStatus;
 import com.scaler.BMS_Eve.models.Booking;
 import com.scaler.BMS_Eve.models.BookingStatus;
 import com.scaler.BMS_Eve.services.BookingService;
@@ -13,7 +14,7 @@ public class BookingController {
     @Autowired // Autowired will inject the bookingService singleton here internally
     BookingService bookingService;
 
-    BookTicketResponseDTO bookTicket(BookTicketRequestDTO requestDTO){
+    public BookTicketResponseDTO bookTicket(BookTicketRequestDTO requestDTO){
         BookTicketResponseDTO responseDTO = new BookTicketResponseDTO();
         try{
             Booking booking = bookingService.reserveBooking(
@@ -22,12 +23,14 @@ public class BookingController {
                     requestDTO.getShowSeatIds());
             responseDTO.setBookingId(booking.getId());
             responseDTO.setBookingStatus(booking.getStatus());
+            responseDTO.setResponseStatus(ResponseStatus.SUCCESS);
             responseDTO.setMessage("Seat selection successful, please complete the payment for confirming your booking");
         }catch(Exception e){
             System.out.println("Seat selection failed! - " + e.getMessage());
             responseDTO.setBookingId(null);
             responseDTO.setMessage("Seat selection failed");
             responseDTO.setBookingStatus(BookingStatus.FAILURE);
+            responseDTO.setResponseStatus(ResponseStatus.FAILURE);
         }
         return responseDTO;
     }
