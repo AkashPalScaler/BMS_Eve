@@ -24,4 +24,14 @@ public class Booking extends BaseModel {
     private List<Payment> payments;
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
+    @OneToMany(mappedBy = "booking")
+    private List<ShowSeat> showSeats;
+
+    private static int count = 1;
+
+    public static String ticketNumberGenerator(){
+        String bookingNumber =  "Booking_"+count;
+        count++;
+        return bookingNumber;
+    }
 }

@@ -10,4 +10,5 @@ public class BookTicketResponseDTO {
     Long bookingId;
     String message;
     BookingStatus bookingStatus;
+    Integer amount;
 }
